@@ -1,0 +1,18 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: demo
+  name: hello-ingress
+  labels:
+    app: Internal
+    uptime: Ping
+spec:
+  rules:
+    - host: hello.minikube.retna
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: hello-service
+              servicePort: 80

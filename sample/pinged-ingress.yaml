@@ -1,0 +1,18 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: demo
+  name: pinged-ingress
+  labels:
+    app: Internal
+    uptime: Ping
+spec:
+  rules:
+  - host: public.url.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: non-existent-service
+          servicePort: http

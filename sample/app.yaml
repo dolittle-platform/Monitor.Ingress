@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: demo
+  name: hello-service
+spec:
+  selector:
+    app: Echo-Headers
+    type: Echo-Test
+  ports:
+    - port: 80
+      targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: demo
+  name: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Echo-Headers
+      type: Echo-Test
+  template:
+    metadata:
+      labels:
+        app: Echo-Headers
+        type: Echo-Test
+    spec:
+      containers:
+        - name: echo-headers
+          image: k8s.gcr.io/echoserver:1.4
+          ports:
+            - containerPort: 8080

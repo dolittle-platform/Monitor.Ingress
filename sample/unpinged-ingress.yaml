@@ -1,0 +1,17 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: demo
+  name: unpinged-ingress
+  labels:
+    app: Internal
+spec:
+  rules:
+  - host: secret.url.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: non-existent-service
+          servicePort: http
