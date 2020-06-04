@@ -9,15 +9,24 @@
         <version>2.2.5.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>io.dolittle.monitor</groupId>
-    <artifactId>ingress</artifactId>
+    
+    <groupId>io.dolittle.moose</groupId>
+    <artifactId>moose-parent</artifactId>
     <version>0.0.1</version>
-    <name>ingress-monitor</name>
+    <name>Moose</name>
     <description>Application suite to monitor Kubernetes ingress</description>
+    <packaging>pom</packaging>
 
     <properties>
         <java.version>11</java.version>
     </properties>
+
+    <modules>
+        <module>Source/Kubernetes</module>
+        <module>Source/Controller</module>
+        <module>Source/Pinger</module>
+        <module>Source/Runner</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -58,8 +67,12 @@
         <dependency>
             <groupId>io.kubernetes</groupId>
             <artifactId>client-java-extended</artifactId>
-            <version>8.0.0</version>
-            <scope>compile</scope>
+            <version>8.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java-spring-integration</artifactId>
+            <version>8.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -78,16 +91,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
