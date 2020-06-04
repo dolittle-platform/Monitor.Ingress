@@ -2,10 +2,16 @@ package io.dolittle.moose.kubernetes.ingresses;
 
 import java.util.function.Predicate;
 
+import org.springframework.stereotype.Component;
+
 import io.dolittle.moose.kubernetes.Annotation;
 import io.dolittle.moose.kubernetes.Namespace;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 
+/**
+ * An implementation of {@link ICanCreateIngressFilters}.
+ */
+@Component
 public class FilterCreator implements ICanCreateIngressFilters {
     @Override
     public Predicate<ExtensionsV1beta1Ingress> namespaceFilter(Namespace namespace) {

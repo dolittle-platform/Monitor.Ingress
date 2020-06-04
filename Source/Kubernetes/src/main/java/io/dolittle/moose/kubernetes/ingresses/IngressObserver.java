@@ -4,6 +4,7 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.dolittle.moose.kubernetes.Annotation;
 import io.dolittle.moose.kubernetes.Namespace;
@@ -16,6 +17,7 @@ import io.reactivex.rxjava3.core.Observable;
 /**
  * An implementation of {@link ICanObserveIngresses} that uses {@link ICanProvideInformers} to get events about Ingresses.
  */
+@Component
 public class IngressObserver implements ICanObserveIngresses {
     private final SharedInformer<ExtensionsV1beta1Ingress> _informer;
     private final ICanCreateIngressFilters _filterCreator;
