@@ -11,6 +11,7 @@ import java.io.IOException;
 
 @Configuration
 @ComponentScan(basePackages = {"io.dolittle.moose.kubernetes"})
+@PropertySource(value = {"classpath:kubernetes.properties"})
 public class K8sConfig {
     @Bean
     public ApiClient getClient() throws IOException {

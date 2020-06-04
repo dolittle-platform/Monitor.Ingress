@@ -7,12 +7,10 @@ package io.dolittle.moose.controller.service;
 import io.dolittle.moose.controller.properties.ControllerProperties;
 import io.dolittle.moose.controller.properties.IngressProperties;
 import io.dolittle.moose.controller.properties.ServiceProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 public class PropertyService {
 
     private final ControllerProperties controllerProperties;

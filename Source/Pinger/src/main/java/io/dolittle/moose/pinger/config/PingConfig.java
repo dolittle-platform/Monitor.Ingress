@@ -3,20 +3,19 @@
 
 package io.dolittle.moose.pinger.config;
 
-import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.util.ClientBuilder;
-import io.kubernetes.client.util.Config;
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.Executor;
+
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
 
 @Profile("pinger")
 @Configuration
@@ -25,7 +24,7 @@ import java.util.concurrent.Executor;
 @Import(SecurityConfig.class)
 @EnableAsync
 @EnableScheduling
-@Slf4j
+@PropertySource(value = {"classpath:pinger.properties"})
 public class PingConfig implements AsyncConfigurer {
 
     @Override

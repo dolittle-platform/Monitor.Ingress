@@ -4,7 +4,6 @@
 package io.dolittle.moose.pinger.rest;
 
 import io.dolittle.moose.pinger.component.PingManager;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "dolittle/uptime", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-@Slf4j
 public class StatusController {
 
     private final PingManager pingManager;

@@ -3,11 +3,9 @@
 
 package io.dolittle.moose.pinger.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 public class RESTUtil {
 
     public static RestTemplate getRestTemplate() {
