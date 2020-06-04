@@ -22,6 +22,11 @@ public class IngressObserver implements ICanObserveIngresses {
     private final SharedInformer<ExtensionsV1beta1Ingress> _informer;
     private final ICanCreateIngressFilters _filterCreator;
 
+    /**
+     * Initializes a new instance of the {@link IngressObserver} class.
+     * @param informers The {@link ICanProvideInformers} to use to subscribe to Ingress events.
+     * @param filterCreator The {@link ICanCreateIngressFilters} to use to create Ingress filters.
+     */
     @Autowired
     public IngressObserver(ICanProvideInformers informers, ICanCreateIngressFilters filterCreator) {
         _informer = informers.getIngressInformer();
@@ -58,5 +63,4 @@ public class IngressObserver implements ICanObserveIngresses {
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
-
 }

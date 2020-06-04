@@ -20,6 +20,11 @@ public class IngressLister implements ICanListIngresses {
     private final Indexer<ExtensionsV1beta1Ingress> _indexer;
     private final ICanCreateIngressFilters _filterCreator;
 
+    /**
+     * Initializes a new instance of the {@link IngressLister} class.
+     * @param informers The {@link ICanProvideInformers} to use to get Ingresses.
+     * @param filterCreator The {@link ICanCreateIngressFilters} to use to create Ingress filters.
+     */
     @Autowired
     public IngressLister(ICanProvideInformers informers, ICanCreateIngressFilters filterCreator) {
         _indexer = informers.getIngressInformer().getIndexer();
