@@ -3,7 +3,7 @@
 
 package io.dolittle.moose.controller;
 
-import io.dolittle.moose.kubernetes.service.ICanProvideInformers;
+import io.dolittle.moose.kubernetes.informers.ICanProvideInformers;
 import io.kubernetes.client.extended.controller.Controller;
 import io.kubernetes.client.extended.controller.builder.ControllerBuilder;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
