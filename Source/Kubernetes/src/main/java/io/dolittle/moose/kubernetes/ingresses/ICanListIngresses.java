@@ -8,7 +8,7 @@ import io.dolittle.moose.kubernetes.Namespace;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 
 /**
- * Defines a system that can list instances {@link ExtensionsV1beta1Ingress} in Kubernetes.
+ * Defines a system that can list instances of {@link ExtensionsV1beta1Ingress} in Kubernetes.
  */
 public interface ICanListIngresses {
     /**
