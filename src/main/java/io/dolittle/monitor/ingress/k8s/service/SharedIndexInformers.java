@@ -6,6 +6,8 @@ package io.dolittle.monitor.ingress.k8s.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import io.kubernetes.client.informer.SharedIndexInformer;
@@ -17,12 +19,14 @@ import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressList;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1ServiceList;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * An implementation of {@link ICanProvideInformers} that uses the Kubernetes {@link SharedInformerFactory}.
  */
 @Service
-public class SharedIndexInformers implements ICanProvideInformers, ApplicationRunner {
+@Slf4j
+public class SharedIndexInformers implements ApplicationRunner, ICanProvideInformers {
     private final SharedInformerFactory _informerFactory;
     private final SharedIndexInformer<ExtensionsV1beta1Ingress> _ingressInformer;
     private final SharedIndexInformer<V1Service> _serviceInformer;
@@ -46,10 +50,9 @@ public class SharedIndexInformers implements ICanProvideInformers, ApplicationRu
             (params) -> coreV1Api.listServiceForAllNamespacesCall(null, null, null, null, null, null, params.resourceVersion, params.timeoutSeconds, params.watch, null),
             V1Service.class,
             V1ServiceList.class);
-    }
-    
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+
+
+        log.debug("Starting shared index informers");
         _informerFactory.startAllRegisteredInformers();
     }
 
@@ -60,11 +63,13 @@ public class SharedIndexInformers implements ICanProvideInformers, ApplicationRu
     
     @Override
     public SharedIndexInformer<ExtensionsV1beta1Ingress> getIngressInformer() {
+        log.warn("GetIngressInformer");
         return _ingressInformer;
     }
     
     @Override
     public SharedIndexInformer<V1Service> getServiceInformer() {
+        log.warn("GetServiceInformer");
         return _serviceInformer;
     }
 }
