@@ -25,11 +25,10 @@ public class IngressReconciler implements Reconciler {
     private final PropertyService property;
 
     @Autowired
-    public IngressReconciler(KubernetesService kubernetesService, PropertyService propertyService ) {
+    public IngressReconciler(KubernetesService kubernetesService, PropertyService propertyService) {
         property = propertyService;
         this.k8s = kubernetesService;
         log.debug("Created Ingress reconciler");
-
     }
 
     @Override

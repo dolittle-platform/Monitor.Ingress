@@ -3,19 +3,21 @@
 
 package io.dolittle.moose.kubernetes.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.apis.ExtensionsV1beta1Api;
-import io.kubernetes.client.openapi.models.*;
+import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
+import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressList;
+import io.kubernetes.client.openapi.models.V1Namespace;
+import io.kubernetes.client.openapi.models.V1Service;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
