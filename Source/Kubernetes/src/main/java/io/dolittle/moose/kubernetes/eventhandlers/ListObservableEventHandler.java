@@ -9,15 +9,29 @@ import io.kubernetes.client.informer.cache.Caches;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+/**
+ * A {@link ResourceEventHandler} that exposes an {@link Observable} of type {@link Iterable} of resources that is updated on every change event.
+ * It also accepts an optional {@link Predicate} filter which determines what resources should be part of the {@link Iterable}.
+ * @param <ApiType> The type of resources to be contained in the list.
+ */
 public class ListObservableEventHandler<ApiType> implements ResourceEventHandler<ApiType> {
     private final BehaviorSubject<Iterable<ApiType>> _subject;
     private final Predicate<ApiType> _filter;
 
+    /**
+     * Initializes a new instance of the {@link ListObservableEventHandler} class without a filter.
+     * Every resource from the change events will be present in the list.
+     */
     public ListObservableEventHandler() {
         _subject = BehaviorSubject.createDefault(List.<ApiType>of());
         _filter = (obj) -> true;
     }
 
+    /**
+     * Initializes a new instance of the {@link ListObservableEventHandler} class with the given filter.
+     * Only resources from the change events that matches the filter will be present in the list.
+     * @param filter The {@link Predicate} filter that determines wheter a resource should be in the list or not.
+     */
     public ListObservableEventHandler(Predicate<ApiType> filter) {
         _subject = BehaviorSubject.createDefault(List.<ApiType>of());
         _filter = filter;
@@ -53,6 +67,10 @@ public class ListObservableEventHandler<ApiType> implements ResourceEventHandler
         }
     }
     
+    /**
+     * Gets the observable list of resources.
+     * @return An {@link Observable} of type {@link Iterable}.
+     */
     public Observable<Iterable<ApiType>> getObservable() {
         return _subject;
     }

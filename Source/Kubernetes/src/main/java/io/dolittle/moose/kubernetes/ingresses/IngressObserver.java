@@ -13,6 +13,9 @@ import io.kubernetes.client.informer.SharedInformer;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
 import io.reactivex.rxjava3.core.Observable;
 
+/**
+ * An implementation of {@link ICanObserveIngresses} that uses {@link ICanProvideInformers} to get events about Ingresses.
+ */
 public class IngressObserver implements ICanObserveIngresses {
     private final SharedInformer<ExtensionsV1beta1Ingress> _informer;
     private final ICanCreateIngressFilters _filterCreator;
