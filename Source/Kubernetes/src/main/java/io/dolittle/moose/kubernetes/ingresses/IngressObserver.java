@@ -15,10 +15,12 @@ import io.reactivex.rxjava3.core.Observable;
 
 public class IngressObserver implements ICanObserveIngresses {
     private final SharedInformer<ExtensionsV1beta1Ingress> _informer;
+    private final ICanCreateIngressFilters _filterCreator;
 
     @Autowired
-    public IngressObserver(ICanProvideInformers informers) {
+    public IngressObserver(ICanProvideInformers informers, ICanCreateIngressFilters filterCreator) {
         _informer = informers.getIngressInformer();
+        _filterCreator = filterCreator;
     }
 
     @Override
@@ -27,23 +29,29 @@ public class IngressObserver implements ICanObserveIngresses {
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
-
+    
     @Override
     public Observable<Iterable<ExtensionsV1beta1Ingress>> observeAllIngressesWithAnnotations(Annotation... annotations) {
-        // TODO Auto-generated method stub
-        return null;
+        var filter = _filterCreator.annotationsFilter(annotations);
+        var handler = new ListObservableEventHandler<>(filter);
+        _informer.addEventHandler(handler);
+        return handler.getObservable();
     }
-
+    
     @Override
     public Observable<Iterable<ExtensionsV1beta1Ingress>> observeIngressesInNamespace(Namespace namespace) {
-        // TODO Auto-generated method stub
-        return null;
+        var filter = _filterCreator.namespaceFilter(namespace);
+        var handler = new ListObservableEventHandler<>(filter);
+        _informer.addEventHandler(handler);
+        return handler.getObservable();
     }
-
+    
     @Override
     public Observable<Iterable<ExtensionsV1beta1Ingress>> observeIngressesInNamespaceWithAnnotations(Namespace namespace, Annotation... annotations) {
-        // TODO Auto-generated method stub
-        return null;
+        var filter = _filterCreator.namespaceFilter(namespace).and(_filterCreator.annotationsFilter(annotations));
+        var handler = new ListObservableEventHandler<>(filter);
+        _informer.addEventHandler(handler);
+        return handler.getObservable();
     }
 
 }
