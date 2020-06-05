@@ -3,6 +3,7 @@
 
 package io.dolittle.moose.kubernetes.ingresses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.dolittle.moose.kubernetes.Annotations;
@@ -13,9 +14,13 @@ import io.dolittle.moose.kubernetes.secrets.SecretName;
 import io.dolittle.moose.kubernetes.services.Port;
 import io.dolittle.moose.kubernetes.services.ServiceName;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1HTTPIngressPath;
+import io.kubernetes.client.openapi.models.ExtensionsV1beta1HTTPIngressRuleValue;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1Ingress;
+import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressBackend;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressRule;
+import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressSpec;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressTLS;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import lombok.Value;
 
 /**
@@ -29,6 +34,24 @@ public class Ingress implements INamespaceResource{
     Annotations annotations;
     Iterable<TlsSecret> tls;
     Iterable<HostRule> rules;
+
+    /**
+     * Converts the {@link Ingress} to a Kubernetes {@link ExtensionsV1beta1Ingress}.
+     * @return The converted {@link ExtensionsV1beta1Ingress}.
+     */
+    public ExtensionsV1beta1Ingress toKubernetes() {
+        return new ExtensionsV1beta1Ingress()
+            .apiVersion("extensions/v1beta1")
+            .kind("Ingress")
+            .metadata(new V1ObjectMeta()
+                .namespace(namespace.getValue())
+                .name(name.getValue())
+                .annotations(annotations.toKubernetes())
+                .labels(labels.toKubernetes()))
+            .spec(new ExtensionsV1beta1IngressSpec()
+                .tls(TlsSecret.toKubernetes(tls))
+                .rules(HostRule.toKubernetes(rules)));
+    }
 
     /**
      * Converts a Kubernetes {@link ExtensionsV1beta1Ingress} to an {@link Ingress}.
@@ -52,6 +75,28 @@ public class Ingress implements INamespaceResource{
     public static class TlsSecret {
         Iterable<Hostname> hosts;
         SecretName name;
+
+        /**
+         * Converts the {@link TlsSecret} to a Kubernetes {@link ExtensionsV1beta1IngressTLS}.
+         * @return The converted {@link ExtensionsV1beta1IngressTLS}.
+         */
+        public ExtensionsV1beta1IngressTLS toKubernetes() {
+            var tls = new ExtensionsV1beta1IngressTLS();
+            tls.setSecretName(name.getValue());
+            hosts.forEach((hostname) -> tls.addHostsItem(hostname.getValue()));
+            return tls;
+        }
+
+        /**
+         * Converts a set of {@link TlsSecret} to a set of of Kubernetes {@link ExtensionsV1beta1IngressTLS}.
+         * @param tlsSecrets The {@link Iterable} of type {@link TlsSecret} to copy values from.
+         * @return The converted {@link List} of type {@link ExtensionsV1beta1IngressTLS}.
+         */
+        public static List<ExtensionsV1beta1IngressTLS> toKubernetes(Iterable<TlsSecret> tlsSecrets) {
+            var tlss = new ArrayList<ExtensionsV1beta1IngressTLS>();
+            tlsSecrets.forEach((tlsSecret) -> tlss.add(tlsSecret.toKubernetes()));
+            return tlss;
+        }
 
         /**
          * Converts a Kubernetes {@link ExtensionsV1beta1IngressTLS} to an {@link TlsSecret}.
@@ -83,6 +128,29 @@ public class Ingress implements INamespaceResource{
         Iterable<PathRule> paths;
 
         /**
+         * Converts the {@link HostRule} to a Kubernetes {@link ExtensionsV1beta1IngressRule}.
+         * @return The converted {@link ExtensionsV1beta1IngressRule}.
+         */
+        public ExtensionsV1beta1IngressRule toKubernetes() {
+            var http = new ExtensionsV1beta1HTTPIngressRuleValue();
+            paths.forEach((path) -> http.addPathsItem(path.toKubernetes()));
+            return new ExtensionsV1beta1IngressRule()
+                .host(host.getValue())
+                .http(http);
+        }
+
+        /**
+         * Converts a set of {@link HostRule} to a set of of Kubernetes {@link ExtensionsV1beta1IngressRule}.
+         * @param tlsSecrets The {@link Iterable} of type {@link HostRule} to copy values from.
+         * @return The converted {@link List} of type {@link ExtensionsV1beta1IngressRule}.
+         */
+        public static List<ExtensionsV1beta1IngressRule> toKubernetes(Iterable<HostRule> hostRules) {
+            var rules = new ArrayList<ExtensionsV1beta1IngressRule>();
+            hostRules.forEach((hostRule) -> rules.add(hostRule.toKubernetes()));
+            return rules;
+        }
+
+        /**
          * Converts a Kubernetes {@link ExtensionsV1beta1IngressRule} to an {@link HostRule}.
          * @param rule The {@link ExtensionsV1beta1IngressRule} to copy values from.
          * @return The converted {@link HostRule}.
@@ -111,6 +179,18 @@ public class Ingress implements INamespaceResource{
         Path path;
         ServiceName name;
         Port port;
+
+        /**
+         * Converts the {@link PathRule} to a Kubernetes {@link ExtensionsV1beta1HTTPIngressPath}.
+         * @return The converted {@link ExtensionsV1beta1HTTPIngressPath}.
+         */
+        public ExtensionsV1beta1HTTPIngressPath toKubernetes() {
+            return new ExtensionsV1beta1HTTPIngressPath()
+                .path(path.getValue())
+                .backend(new ExtensionsV1beta1IngressBackend()
+                    .serviceName(name.getValue())
+                    .servicePort(port));
+        }
 
         /**
          * Converts a Kubernetes {@link ExtensionsV1beta1HTTPIngressPath} to an {@link PathRule}.

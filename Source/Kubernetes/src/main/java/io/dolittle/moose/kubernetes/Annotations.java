@@ -73,6 +73,17 @@ public class Annotations {
     }
 
     /**
+     * Converts the current set of annoations to Kubernetes Annotations.
+     * @return A {@link Map} of type ({@link String},{@link String}) containing the annotation (key,value) pairs.
+     */
+    public Map<String, String> toKubernetes() {
+        return _entries.values().stream().collect(
+            Collectors.toMap(
+                (annotation) -> annotation.getKey(),
+                (annotation) -> annotation.getValue()));
+    }
+
+    /**
      * Creates an empty set of annotations.
      * @return An {@link Annotations}.
      */

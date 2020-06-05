@@ -4,7 +4,11 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import io.dolittle.moose.kubernetes.Namespace;
+import io.dolittle.moose.kubernetes.errors.KubernetesRequestFailed;
 
+/**
+ * Defines a system that can interact with a Kubernetes Cluster to operate on Ingresses.
+ */
 public interface IIngressApiClient {
     /**
      * Checks whether or not an Ingress with the given Namespace and Name exists in Kubernetes.
@@ -42,13 +46,7 @@ public interface IIngressApiClient {
      * Create an Ingress as described by the provider {@link Ingress} in Kubernetes.
      * @param ingress The {@link Ingress} that describes the Ingress to create.
      * @throws IngressAlreadyExists If an Ingress with the same Name and Namespace as the given {@link Ingress} already exists.
+     * @throws KubernetesRequestFailed If the request to the Api Server failed.
      */
-    void Create(Ingress ingress) throws IngressAlreadyExists;
-
-    /**
-     * Updates an Ingress to match the description of the provided {@link Ingress} in Kubernetes.
-     * @param ingress The {@link Ingress} that describes the desired state of an Ingress.
-     * @throws IngressDoesNotExist  If the Ingress with the given Name in the given Namespace does not exist. 
-     */
-    void Update(Ingress ingress) throws IngressDoesNotExist;
+    void Create(Ingress ingress) throws IngressAlreadyExists, KubernetesRequestFailed;
 }

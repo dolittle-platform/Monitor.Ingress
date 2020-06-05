@@ -67,6 +67,17 @@ public class Labels {
     }
 
     /**
+     * Converts the current set of labels to Kubernetes Labels.
+     * @return A {@link Map} of type ({@link String},{@link String}) containing the label (key,value) pairs.
+     */
+    public Map<String, String> toKubernetes() {
+        return _entries.values().stream().collect(
+            Collectors.toMap(
+                (label) -> label.getKey(),
+                (label) -> label.getValue()));
+    }
+
+    /**
      * Creates a set of labels from a Kubernetes Metadata object.
      * @param meta The {@link V1ObjectMeta} containing the labels to copy.
      * @return A {@link Labels}.
