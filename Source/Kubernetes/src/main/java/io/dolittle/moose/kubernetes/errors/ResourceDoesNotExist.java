@@ -1,10 +1,14 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package io.dolittle.moose.kubernetes;
+package io.dolittle.moose.kubernetes.errors;
+
+import io.dolittle.moose.kubernetes.IName;
+import io.dolittle.moose.kubernetes.Namespace;
 
 /**
- * The exception that gets thrown when trying to get a Resource from Kubernetes that does not exist.
+ * The exception that gets thrown when trying to get a Resource from Kubernetes
+ * that does not exist.
  */
 public abstract class ResourceDoesNotExist extends Exception {
     private static final long serialVersionUID = -7902496222007364568L;

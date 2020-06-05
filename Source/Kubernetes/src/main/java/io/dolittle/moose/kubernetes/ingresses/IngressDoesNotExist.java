@@ -4,7 +4,7 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import io.dolittle.moose.kubernetes.Namespace;
-import io.dolittle.moose.kubernetes.ResourceDoesNotExist;
+import io.dolittle.moose.kubernetes.errors.ResourceDoesNotExist;
 
 /**
  * The exception that gets thrown when trying to get an {@link Ingress} from

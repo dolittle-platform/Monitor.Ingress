@@ -4,7 +4,7 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import io.dolittle.moose.kubernetes.Namespace;
-import io.dolittle.moose.kubernetes.ResourceAlreadyExists;
+import io.dolittle.moose.kubernetes.errors.ResourceAlreadyExists;
 
 /**
  * The exception that gets thrown when trying to create an {@link Ingress} in Kubernetes and an {@link Ingress} with the same {@link IngressName} in the same {@link Namespace} already exists.

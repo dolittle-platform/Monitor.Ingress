@@ -1,10 +1,14 @@
 // Copyright (c) Dolittle. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package io.dolittle.moose.kubernetes;
+package io.dolittle.moose.kubernetes.errors;
+
+import io.dolittle.moose.kubernetes.IName;
+import io.dolittle.moose.kubernetes.Namespace;
 
 /**
- * The exception that gets thrown when trying to create a Resource in Kubernetes and a Resource with the same Name (in the same Namespace) already exists.
+ * The exception that gets thrown when trying to create a Resource in Kubernetes
+ * and a Resource with the same Name (in the same Namespace) already exists.
  */
 public abstract class ResourceAlreadyExists extends Exception {
     private static final long serialVersionUID = -6428167195296667526L;
