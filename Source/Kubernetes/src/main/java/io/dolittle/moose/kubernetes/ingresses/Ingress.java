@@ -6,7 +6,7 @@ package io.dolittle.moose.kubernetes.ingresses;
 import java.util.List;
 
 import io.dolittle.moose.kubernetes.Annotations;
-import io.dolittle.moose.kubernetes.INamespacedResource;
+import io.dolittle.moose.kubernetes.INamespaceResource;
 import io.dolittle.moose.kubernetes.Labels;
 import io.dolittle.moose.kubernetes.Namespace;
 import io.dolittle.moose.kubernetes.secrets.SecretName;
@@ -22,7 +22,7 @@ import lombok.Value;
  * Represents a Kubernetes Ingress.
  */
 @Value
-public class Ingress implements INamespacedResource{
+public class Ingress implements INamespaceResource{
     Namespace namespace;
     IngressName name;
     Labels labels;

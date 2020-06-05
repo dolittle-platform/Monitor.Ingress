@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import io.dolittle.moose.kubernetes.INamespacedResource;
+import io.dolittle.moose.kubernetes.INamespaceResource;
 import io.kubernetes.client.informer.ResourceEventHandler;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -18,7 +18,7 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
  * It also accepts an optional {@link Predicate} filter which determines what resources should be part of the {@link Iterable}.
  * @param <ApiType> The type of resources to be contained in the list.
  */
-public class ListObservableEventHandler<ApiType, WrappedType extends INamespacedResource> implements ResourceEventHandler<ApiType> {
+public class ListObservableEventHandler<ApiType, WrappedType extends INamespaceResource> implements ResourceEventHandler<ApiType> {
     private final BehaviorSubject<Iterable<WrappedType>> _subject;
     private final Function<ApiType, WrappedType> _mapper;
     private final Predicate<WrappedType> _filter;

@@ -4,9 +4,8 @@
 package io.dolittle.moose.kubernetes;
 
 /**
- * Defines a wrapper type of a Kubernetes Resource definition that is scoped to a {@link Namespace}.
+ * Defines a wrapper type of a Kubernetes Resource definition that is scoped to the Cluster.
  */
-public interface INamespacedResource {
-    public Namespace getNamespace();
+public interface IClusterResource {
     public IName getName();
 }
