@@ -72,7 +72,9 @@ public class Labels {
      * @return A {@link Labels}.
      */
     public static Labels from(V1ObjectMeta meta) {
-        var map = meta.getLabels().entrySet().stream().collect(Collectors.toMap((entry) -> entry.getKey(), (entry) -> new Label(entry.getKey(), entry.getValue())));
-        return new Labels(map);
+        return new Labels(meta.getLabels().entrySet().stream().collect(
+            Collectors.toMap(
+                (entry) -> entry.getKey(),
+                (entry) -> new Label(entry.getKey(), entry.getValue()))));
     }
 }
