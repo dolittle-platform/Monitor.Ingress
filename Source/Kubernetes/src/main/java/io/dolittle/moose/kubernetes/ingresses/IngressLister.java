@@ -32,25 +32,25 @@ public class IngressLister implements ICanListIngresses {
     }
 
     @Override
-    public Iterable<ExtensionsV1beta1Ingress> getAllIngresses() {
-        return _indexer.list();
+    public Iterable<Ingress> getAllIngresses() {
+        return _indexer.list().stream().map(Ingress::from)::iterator;
     }
 
     @Override
-    public Iterable<ExtensionsV1beta1Ingress> getAllIngressesWithAnnotations(Annotation... annotations) {
+    public Iterable<Ingress> getAllIngressesWithAnnotations(Annotation... annotations) {
         var filter = _filterCreator.annotationsFilter(annotations);
-        return _indexer.list().stream().filter(filter)::iterator;
+        return _indexer.list().stream().map(Ingress::from).filter(filter)::iterator;
     }
     
     @Override
-    public Iterable<ExtensionsV1beta1Ingress> getIngressesInNamespace(Namespace namespace) {
+    public Iterable<Ingress> getIngressesInNamespace(Namespace namespace) {
         var filter = _filterCreator.namespaceFilter(namespace);
-        return _indexer.list().stream().filter(filter)::iterator;
+        return _indexer.list().stream().map(Ingress::from).filter(filter)::iterator;
     }
     
     @Override
-    public Iterable<ExtensionsV1beta1Ingress> getIngressesInNamespaceWithAnnotations(Namespace namespace, Annotation... annotations) {
+    public Iterable<Ingress> getIngressesInNamespaceWithAnnotations(Namespace namespace, Annotation... annotations) {
         var filter = _filterCreator.namespaceFilter(namespace).and(_filterCreator.annotationsFilter(annotations));
-        return _indexer.list().stream().filter(filter)::iterator;
+        return _indexer.list().stream().map(Ingress::from).filter(filter)::iterator;
     }
 }

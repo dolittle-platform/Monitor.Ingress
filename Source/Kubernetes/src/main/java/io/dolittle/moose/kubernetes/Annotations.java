@@ -28,6 +28,20 @@ public class Annotations {
     }
 
     /**
+     * Checks whether or not the {@link Annotations} contains all of the given list of {@link Annotation}.
+     * @param annotations The list of {@link Annotation} to check.
+     * @return {@literal true} if the {@link Annotations} contain all of the annotations, {@literal false} if not.
+     */
+    public boolean contains(Annotation... annotations) {
+        for (var annotation : annotations) {
+            if (!_entries.containsKey(annotation.getKey()) || !_entries.get(annotation.getKey()).equals(annotation)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Creates a new set of annotations by copying the current set, and adding the given annotations.
      * @param annotations The list of {@link Annotation} to add.
      * @return A new {@link Annotations}.

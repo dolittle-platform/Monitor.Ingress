@@ -34,32 +34,32 @@ public class IngressObserver implements ICanObserveIngresses {
     }
 
     @Override
-    public Observable<Iterable<ExtensionsV1beta1Ingress>> observeAllIngresses() {
-        var handler = new ListObservableEventHandler<ExtensionsV1beta1Ingress>();
+    public Observable<Iterable<Ingress>> observeAllIngresses() {
+        var handler = new ListObservableEventHandler<>(Ingress::from);
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
     
     @Override
-    public Observable<Iterable<ExtensionsV1beta1Ingress>> observeAllIngressesWithAnnotations(Annotation... annotations) {
+    public Observable<Iterable<Ingress>> observeAllIngressesWithAnnotations(Annotation... annotations) {
         var filter = _filterCreator.annotationsFilter(annotations);
-        var handler = new ListObservableEventHandler<>(filter);
+        var handler = new ListObservableEventHandler<>(Ingress::from, filter);
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
     
     @Override
-    public Observable<Iterable<ExtensionsV1beta1Ingress>> observeIngressesInNamespace(Namespace namespace) {
+    public Observable<Iterable<Ingress>> observeIngressesInNamespace(Namespace namespace) {
         var filter = _filterCreator.namespaceFilter(namespace);
-        var handler = new ListObservableEventHandler<>(filter);
+        var handler = new ListObservableEventHandler<>(Ingress::from, filter);
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
     
     @Override
-    public Observable<Iterable<ExtensionsV1beta1Ingress>> observeIngressesInNamespaceWithAnnotations(Namespace namespace, Annotation... annotations) {
+    public Observable<Iterable<Ingress>> observeIngressesInNamespaceWithAnnotations(Namespace namespace, Annotation... annotations) {
         var filter = _filterCreator.namespaceFilter(namespace).and(_filterCreator.annotationsFilter(annotations));
-        var handler = new ListObservableEventHandler<>(filter);
+        var handler = new ListObservableEventHandler<>(Ingress::from, filter);
         _informer.addEventHandler(handler);
         return handler.getObservable();
     }
