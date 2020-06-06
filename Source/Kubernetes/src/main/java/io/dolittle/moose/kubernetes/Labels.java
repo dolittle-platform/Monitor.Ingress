@@ -83,6 +83,7 @@ public class Labels {
      * @return A {@link Labels}.
      */
     public static Labels from(V1ObjectMeta meta) {
+        if (meta == null || meta.getLabels() == null) return empty();
         return new Labels(meta.getLabels().entrySet().stream().collect(
             Collectors.toMap(
                 (entry) -> entry.getKey(),

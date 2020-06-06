@@ -4,6 +4,7 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.dolittle.moose.kubernetes.Annotations;
@@ -115,6 +116,7 @@ public class Ingress implements INamespaceResource{
          * @return The converted {@link Iterable} of type {@link TlsSecret}.
          */
         public static Iterable<TlsSecret> from(List<ExtensionsV1beta1IngressTLS> tlss) {
+            if (tlss == null) return Collections.emptyList();
             return tlss.stream().map(TlsSecret::from)::iterator;
         }
     }
@@ -166,7 +168,8 @@ public class Ingress implements INamespaceResource{
          * @param rules The {@link List} of type {@link ExtensionsV1beta1IngressRule} to copy values from.
          * @return The converted {@link Iterable} of type {@link HostRule}.
          */
-        public static Iterable<HostRule> from (List<ExtensionsV1beta1IngressRule> rules) {
+        public static Iterable<HostRule> from(List<ExtensionsV1beta1IngressRule> rules) {
+            if (rules == null) return Collections.emptyList();
             return rules.stream().map(HostRule::from)::iterator;
         }
     }

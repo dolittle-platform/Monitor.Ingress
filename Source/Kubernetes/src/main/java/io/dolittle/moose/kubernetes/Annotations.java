@@ -97,6 +97,7 @@ public class Annotations {
      * @return An {@link Annotations}.
      */
     public static Annotations from(V1ObjectMeta meta) {
+        if (meta == null || meta.getAnnotations() == null) return empty();
         return new Annotations(meta.getAnnotations().entrySet().stream().collect(
             Collectors.toMap(
                 (entry) -> entry.getKey(),
