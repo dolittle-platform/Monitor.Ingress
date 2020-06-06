@@ -4,12 +4,17 @@
 package io.dolittle.moose.kubernetes.ingresses;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.dolittle.moose.kubernetes.Annotation;
 import io.dolittle.moose.kubernetes.Annotations;
+import io.dolittle.moose.kubernetes.AnnotationsAlreadyContainAnnotationWithKey;
 import io.dolittle.moose.kubernetes.INamespaceResource;
+import io.dolittle.moose.kubernetes.Label;
 import io.dolittle.moose.kubernetes.Labels;
+import io.dolittle.moose.kubernetes.LabelsAlreadyContainLabelWithKey;
 import io.dolittle.moose.kubernetes.Namespace;
 import io.dolittle.moose.kubernetes.secrets.SecretName;
 import io.dolittle.moose.kubernetes.services.Port;
@@ -22,19 +27,85 @@ import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressRule;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressSpec;
 import io.kubernetes.client.openapi.models.ExtensionsV1beta1IngressTLS;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.Value;
+import lombok.experimental.Accessors;
 
 /**
  * Represents a Kubernetes Ingress.
  */
 @Value
-public class Ingress implements INamespaceResource{
-    Namespace namespace;
-    IngressName name;
-    Labels labels;
-    Annotations annotations;
-    Iterable<TlsSecret> tls;
-    Iterable<HostRule> rules;
+@Accessors(prefix = { "_" })
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Ingress implements INamespaceResource {
+    private final @NonNull Namespace _namespace;
+    private final @NonNull IngressName _name;
+    private final @NonNull Labels _labels;
+    private final @NonNull Annotations _annotations;
+    private final @NonNull Iterable<TlsSecret> _tls;
+    private final @NonNull Iterable<HostRule> _rules;
+
+    /**
+     * Initializes a new instance of the {@link Ingress} class.
+     * @param namespace The {@link Namespace} of the {@link Ingress}.
+     * @param name The {@link IngressName} of the {@link Ingress}.
+     */
+    public Ingress(@NonNull Namespace namespace, @NonNull IngressName name) {
+        _namespace = namespace;
+        _name = name;
+        _labels = Labels.empty();
+        _annotations = Annotations.empty();
+        _tls = Collections.emptyList();
+        _rules = Collections.emptyList();
+    }
+
+    /**
+     * Creates a copy of the current {@link Ingress} adding the given set of {@link Label}.
+     * @param labels The list of {@link Label} to add.
+     * @return A new {@link Ingress} with the added set of {@link Label}.
+     * @throws LabelsAlreadyContainLabelWithKey If the {@link Ingress} already contains a {@link Label} with the same key as any of the given labels.
+     */
+    public Ingress withLabels(Label... labels) throws LabelsAlreadyContainLabelWithKey {
+        if (labels.length == 0) return this;
+        return new Ingress(_namespace, _name, _labels.with(labels), _annotations, _tls, _rules);
+    }
+
+    /**
+     * Creates a copy of the current {@link Ingress} adding the given set of {@link Annotation}.
+     * @param annotations The list of {@link Annotation} to add.
+     * @return A new {@link Ingress} with the added set of {@link Annotation}.
+     * @throws AnnotationsAlreadyContainAnnotationWithKey If the {@link Ingress} already contains a {@link Annotation} with the same key as any of the given annotations.
+     */
+    public Ingress withAnnotations(Annotation... annotations) throws AnnotationsAlreadyContainAnnotationWithKey {
+        if (annotations.length == 0) return this;
+        return new Ingress(_namespace, _name, _labels, _annotations.with(annotations), _tls, _rules);
+    }
+
+    /**
+     * Creates a copy of the current {@link Ingress} adding the given set of {@link TlsSecret}.
+     * @param tlss The list of {@link TlsSecret} to add.
+     * @return A new {@link Ingress} with the added set of {@link TlsSecret}.
+     */
+    public Ingress withTls(TlsSecret... tlss) {
+        if (tlss.length == 0) return this;
+        var newTls = Arrays.asList(tlss);
+        _tls.forEach(newTls::add);
+        return new Ingress(_namespace, _name, _labels, _annotations, newTls, _rules);
+    }
+
+    /**
+     * Creates a copy of the current {@link Ingress} adding the given set of {@link HostRule}.
+     * @param tlss The list of {@link HostRule} to add.
+     * @return A new {@link Ingress} with the added set of {@link HostRule}.
+     */
+    public Ingress withHosts(HostRule... rules) {
+        if (rules.length == 0) return this;
+        var newRules = Arrays.asList(rules);
+        _rules.forEach(newRules::add);
+        return new Ingress(_namespace, _name, _labels, _annotations, _tls, newRules);
+    }
 
     /**
      * Converts the {@link Ingress} to a Kubernetes {@link ExtensionsV1beta1Ingress}.
@@ -45,13 +116,13 @@ public class Ingress implements INamespaceResource{
             .apiVersion("extensions/v1beta1")
             .kind("Ingress")
             .metadata(new V1ObjectMeta()
-                .namespace(namespace.getValue())
-                .name(name.getValue())
-                .annotations(annotations.toKubernetes())
-                .labels(labels.toKubernetes()))
+                .namespace(_namespace.getValue())
+                .name(_name.getValue())
+                .annotations(_annotations.toKubernetes())
+                .labels(_labels.toKubernetes()))
             .spec(new ExtensionsV1beta1IngressSpec()
-                .tls(TlsSecret.toKubernetes(tls))
-                .rules(HostRule.toKubernetes(rules)));
+                .tls(TlsSecret.toKubernetes(_tls))
+                .rules(HostRule.toKubernetes(_rules)));
     }
 
     /**
@@ -73,9 +144,30 @@ public class Ingress implements INamespaceResource{
      * Represents a Kubernetes Ingress TLS.
      */
     @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class TlsSecret {
-        Iterable<Hostname> hosts;
-        SecretName name;
+        private final @NonNull Iterable<Hostname> _hosts;
+        private final @NonNull SecretName _name;
+
+        /**
+         * Initializes a new instance of the {@link TlsSecret} class.
+         * @param name The {@link SecretName} in the same {@link Namespace} as the {@link Ingress} that holds the server certificate to use for HTTPS.
+         */
+        public TlsSecret(@NonNull SecretName name) {
+            _hosts = Collections.emptyList();
+            _name = name;
+        }
+
+        /**
+         * Creates a copy of the current {@link TlsSecret} adding the given set of {@link Hostname}.
+         * @param hostnames The list of {@link Hostname} to add.
+         * @return A new {@link TlsSecret} with the added set of {@link Hostname}.
+         */
+        public TlsSecret withHostnames(Hostname... hostnames) {
+            var hosts = Arrays.asList(hostnames);
+            _hosts.forEach(hosts::add);
+            return new TlsSecret(hosts, _name);
+        }
 
         /**
          * Converts the {@link TlsSecret} to a Kubernetes {@link ExtensionsV1beta1IngressTLS}.
@@ -83,8 +175,8 @@ public class Ingress implements INamespaceResource{
          */
         public ExtensionsV1beta1IngressTLS toKubernetes() {
             var tls = new ExtensionsV1beta1IngressTLS();
-            tls.setSecretName(name.getValue());
-            hosts.forEach((hostname) -> tls.addHostsItem(hostname.getValue()));
+            tls.setSecretName(_name.getValue());
+            _hosts.forEach((hostname) -> tls.addHostsItem(hostname.getValue()));
             return tls;
         }
 
@@ -125,9 +217,30 @@ public class Ingress implements INamespaceResource{
      * Represents a Kubernetes Ingress Rule.
      */
     @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class HostRule {
-        Hostname host;
-        Iterable<PathRule> paths;
+        private final @NonNull Hostname _host;
+        private final @NonNull Iterable<PathRule> _paths;
+
+        /**
+         * Initializes a new instance of the {@link HostRule} class.
+         * @param host The {@link Hostname} to serve with this {@link Ingress}.
+         */
+        public HostRule(@NonNull Hostname host) {
+            _host = host;
+            _paths = Collections.emptyList();
+        }
+
+        /**
+         * Creates a copy of the current {@link HostRule} adding the given set of {@link PathRule}.
+         * @param rules The list of {@link PathRule} to add.
+         * @return A new {@link HostRule} with the added set of {@link PathRule}.
+         */
+        public HostRule withPaths(PathRule... rules) {
+            var paths = Arrays.asList(rules);
+            _paths.forEach(paths::add);
+            return new HostRule(_host, paths);
+        }
 
         /**
          * Converts the {@link HostRule} to a Kubernetes {@link ExtensionsV1beta1IngressRule}.
@@ -135,9 +248,9 @@ public class Ingress implements INamespaceResource{
          */
         public ExtensionsV1beta1IngressRule toKubernetes() {
             var http = new ExtensionsV1beta1HTTPIngressRuleValue();
-            paths.forEach((path) -> http.addPathsItem(path.toKubernetes()));
+            _paths.forEach((path) -> http.addPathsItem(path.toKubernetes()));
             return new ExtensionsV1beta1IngressRule()
-                .host(host.getValue())
+                .host(_host.getValue())
                 .http(http);
         }
 
@@ -179,9 +292,9 @@ public class Ingress implements INamespaceResource{
      */
     @Value
     public static class PathRule {
-        Path path;
-        ServiceName name;
-        Port port;
+        private final Path _path;
+        private final ServiceName _name;
+        private final Port _port;
 
         /**
          * Converts the {@link PathRule} to a Kubernetes {@link ExtensionsV1beta1HTTPIngressPath}.
@@ -189,10 +302,10 @@ public class Ingress implements INamespaceResource{
          */
         public ExtensionsV1beta1HTTPIngressPath toKubernetes() {
             return new ExtensionsV1beta1HTTPIngressPath()
-                .path(path.getValue())
+                .path(_path.getValue())
                 .backend(new ExtensionsV1beta1IngressBackend()
-                    .serviceName(name.getValue())
-                    .servicePort(port));
+                    .serviceName(_name.getValue())
+                    .servicePort(_port));
         }
 
         /**
@@ -213,7 +326,7 @@ public class Ingress implements INamespaceResource{
      */
     @Value
     public static class Hostname {
-        String value;
+        private final @NonNull String _value;
     }
 
     /**
@@ -221,6 +334,6 @@ public class Ingress implements INamespaceResource{
      */
     @Value
     public static class Path {
-        String value;
+        private final @NonNull String _value;
     }
 }
