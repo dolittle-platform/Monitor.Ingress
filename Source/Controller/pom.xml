@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>moose-controller</artifactId>
+    <name>Moose Controller</name>
+    <description>The Kubernetes Controller that watches Kubernetes for Ingresses that should be monitored, and configures the Cluster to allow the Moose Pinger to perform its dutys.</description>
 
     <dependencies>
         <dependency>

@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>moose-runner</artifactId>
+    <name>Moose Runner</name>
+    <description>The Moose runtime that starts all or selected Moose components based on the provided configuration.</description>
     
     <dependencies>
         <dependency>

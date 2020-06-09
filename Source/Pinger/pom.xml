@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>moose-pinger</artifactId>
+    <name>Moose Pinger</name>
+    <description>An HTTP pinger sends HTTP requests to a specific path that is routed to itself, to ensure that your surrounding infrastructure (networks, IP addresses, DNS...) is correctly configured to serve the configured hostnames.</description>
 
     <dependencies>
         <dependency>

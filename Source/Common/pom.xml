@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>moose-common</artifactId>
+    <name>Moose Common Components</name>
+    <description>Common components that are used in multiple Moose Modules, to ensure that the they work and are configured properly together.</description>
 
     <dependencies>
         <dependency>

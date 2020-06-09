@@ -18,7 +18,7 @@
     <artifactId>moose-parent</artifactId>
     <version>${revision}</version>
     <name>Moose</name>
-    <description>Application suite to monitor Kubernetes ingress</description>
+    <description>Application suite to monitor Ingresses in a Kubernetes Cluster. It performs health-checks and security scans to ensure that your cluster and surrounding infrastructure is correctly and securely configured.</description>
     <packaging>pom</packaging>
 
     <modules>
