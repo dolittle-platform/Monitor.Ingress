@@ -16,6 +16,14 @@
     <description>Application suite to monitor Kubernetes ingress</description>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>Source/Kubernetes</module>
+        <module>Source/Common</module>
+        <module>Source/Controller</module>
+        <module>Source/Pinger</module>
+        <module>Source/Runner</module>
+    </modules>
+
     <url>https://github.com/dolittle-platform/Moose</url>
     <organization>
         <name>Dolittle</name>
@@ -48,13 +56,6 @@
     <properties>
         <java.version>11</java.version>
     </properties>
-
-    <modules>
-        <module>Source/Kubernetes</module>
-        <module>Source/Controller</module>
-        <module>Source/Pinger</module>
-        <module>Source/Runner</module>
-    </modules>
 
     <dependencies>
         <dependency>

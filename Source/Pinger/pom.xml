@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>io.dolittle.moose</groupId>
-            <artifactId>moose-kubernetes</artifactId>
+            <artifactId>moose-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

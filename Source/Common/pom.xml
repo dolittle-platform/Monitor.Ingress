@@ -10,12 +10,12 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>moose-controller</artifactId>
+    <artifactId>moose-common</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>io.dolittle.moose</groupId>
-            <artifactId>moose-common</artifactId>
+            <artifactId>moose-kubernetes</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
