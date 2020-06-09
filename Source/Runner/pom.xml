@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.dolittle.moose</groupId>
         <artifactId>moose-parent</artifactId>
-        <version>0.0.1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
