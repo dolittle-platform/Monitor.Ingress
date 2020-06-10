@@ -3,7 +3,7 @@
 
 package io.dolittle.moose.pinger.rest;
 
-import io.dolittle.moose.pinger.component.PingManager;
+import io.dolittle.moose.pinger.component.PingStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "dolittle/uptime", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
 public class StatusController {
 
-    private final PingManager pingManager;
+    private final PingStatus _pingStatus;
 
     @Autowired
-    public StatusController(PingManager pingManager) {
-        this.pingManager = pingManager;
+    public StatusController(PingStatus pingStatus) {
+        _pingStatus = pingStatus;
     }
 
     @RequestMapping(value = "/status")
     public ResponseEntity<String> Status() {
-        Boolean status = pingManager.getSummary();
+        var status = _pingStatus.getStatus();
         if (status) {
             return new ResponseEntity<>("{ \"status\":\"OK\" }", HttpStatus.OK);
         }

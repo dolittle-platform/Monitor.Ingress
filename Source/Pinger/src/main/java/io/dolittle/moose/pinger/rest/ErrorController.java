@@ -3,7 +3,7 @@
 
 package io.dolittle.moose.pinger.rest;
 
-import io.dolittle.moose.pinger.model.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,8 +13,8 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
 
     @RequestMapping(value = "/error")
     @ResponseBody
-    public Response handleError() {
-        return Response.error();
+    public ResponseEntity<String> handleError() {
+        return ResponseEntity.badRequest().build();
     }
 
     @Override

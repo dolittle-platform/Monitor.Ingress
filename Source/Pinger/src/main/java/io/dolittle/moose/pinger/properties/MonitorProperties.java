@@ -3,11 +3,18 @@
 
 package io.dolittle.moose.pinger.properties;
 
+import io.dolittle.moose.kubernetes.Annotation;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "monitor.ingress.ping")
+@ConfigurationProperties(prefix = "io.dolittle.moose.monitor")
 @Data
 public class MonitorProperties {
-    private String ingressSelector;
+    private String _key;
+    private String _value;
+
+    public Annotation getAnnotation() {
+        return new Annotation(_key, _value);
+    }
+
 }

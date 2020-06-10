@@ -3,12 +3,12 @@
 
 package io.dolittle.moose.pinger.component;
 
-import io.dolittle.moose.kubernetes.service.KubernetesService;
+import io.dolittle.moose.kubernetes.ingresses.ICanObserveIngresses;
 import io.dolittle.moose.pinger.model.PingHost;
+import io.dolittle.moose.pinger.properties.MonitorProperties;
+import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,37 +16,69 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Ingress manager is responsible to aggregate a list of {@link PingHost} that will be used by {@link PingManager}.
+ * It utilizes the observer pattern by subscribing to Ingress events. Events are filtered by {@link io.dolittle.moose.kubernetes.Annotation}
+ */
 @Component
 @Slf4j
 public class IngressManager {
 
-    private final Set<PingHost> hostList = new HashSet<>();
-    private final KubernetesService k8Service;
+    private final Set<PingHost> _hostList = new HashSet<>();
+    private final ICanObserveIngresses _ingressObserver;
+    private final MonitorProperties _monitorProperties;
 
     @Autowired
-    public IngressManager(KubernetesService kubernetesService) {
+    public IngressManager(ICanObserveIngresses IngressObserver, MonitorProperties monitorProperties) {
+        _ingressObserver = IngressObserver;
+        _monitorProperties = monitorProperties;
         log.info("Ingress Manager instantiated.");
-        this.k8Service = kubernetesService;
-        listAllMonitoredIngress();
+        aggregateHosts();
     }
 
-    @Scheduled(cron = "0 0/15 * * * ?")
-    @Async
-    public void listAllMonitoredIngress() {
-        log.debug("Listing all monitored ingresses in cluster");
+    /**
+     * Returns a List of hosts
+     * @return {@link List} of {@link PingHost}
+     */
+    public synchronized List<PingHost> getHostsList() {
+        return new ArrayList<>(_hostList);
+    }
 
-        List<PingHost> hostsToPing = new ArrayList<PingHost>(); //k8Service.getAllHostToPingFromIngress();
-        updateHostList(hostsToPing);
+    private void aggregateHosts() {
+        log.debug("Aggregating hosts to be monitored");
+        var observable = _ingressObserver.observeAllIngressesWithAnnotations(_monitorProperties.getAnnotation());
+        Disposable subscribe = observable.subscribe(ingresses -> {
+            //Run through each item and aggregate a List of PingHost
+            List<PingHost> pingHosts = new ArrayList<>();
+            ingresses.forEach(ingress -> {
+                var tls = ingress.getTls();
+                Set<String> tlsList = new HashSet<>();
+                tls.forEach(tlsSecret -> {
+                    var tlsHost = tlsSecret.getHosts();
+                    tlsHost.forEach(hostname -> tlsList.add(hostname.getValue()));
+                });
 
-        log.info("Found {} ingresses in cluster", hostsToPing.size());
+                var rules = ingress.getRules();
+                rules.forEach(hostRule -> {
+                    var pingHost = new PingHost();
+                    var host = hostRule.getHost().getValue();
+                    pingHost.setHost(host);
+                    pingHost.setPath(hostRule.getPaths().iterator().next().getPath().getValue());
+                    pingHost.setTls(tlsList.contains(host));
+
+                    pingHosts.add(pingHost);
+                });
+            });
+            updateHostList(pingHosts);
+            log.info("Found {} ingresses in cluster", pingHosts.size());
+        });
+
     }
 
     private synchronized void updateHostList(List<PingHost> ingList) {
-        hostList.clear();
-        hostList.addAll(ingList);
+        _hostList.clear();
+        _hostList.addAll(ingList);
     }
 
-    public synchronized List<PingHost> getHostList() {
-        return new ArrayList<>(hostList);
-    }
+
 }
