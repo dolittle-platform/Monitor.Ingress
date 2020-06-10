@@ -11,8 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 
 @Profile("controller")
 @Configuration
-@ComponentScan(basePackages = {"io.dolittle.moose.controller", "io.dolittle.moose.kubernetes.config"})
-@ConfigurationPropertiesScan(basePackages = {"io.dolittle.moose.controller.properties"})
+@ComponentScan(basePackages = {"io.dolittle.moose.controller", "io.dolittle.moose.common.config"})
+@ConfigurationPropertiesScan(basePackages = {"io.dolittle.moose.controller"})
 @PropertySource(value = {"classpath:controller.properties"})
 public class ControllerConfig {
 
