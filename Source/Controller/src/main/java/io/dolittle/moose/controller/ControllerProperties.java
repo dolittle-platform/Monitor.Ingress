@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 import io.dolittle.moose.common.properties.CommonProperties;
-import io.dolittle.moose.common.properties.ping.PingProperties;
+import io.dolittle.moose.common.properties.ping.PingIngressProperties;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -14,7 +14,7 @@ import lombok.Value;
 @ConstructorBinding
 public class ControllerProperties extends CommonProperties {
     
-    public ControllerProperties(PingProperties ping) {
+    public ControllerProperties(PingIngressProperties ping) {
         super(ping);
     }
 }
