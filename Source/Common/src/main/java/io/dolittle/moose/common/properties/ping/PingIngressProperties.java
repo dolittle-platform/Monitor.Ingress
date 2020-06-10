@@ -1,3 +1,6 @@
+// Copyright (c) Dolittle. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package io.dolittle.moose.common.properties.ping;
 
 import io.dolittle.moose.kubernetes.Annotation;
