@@ -6,16 +6,18 @@
     <parent>
         <groupId>io.dolittle.moose</groupId>
         <artifactId>moose-parent</artifactId>
-        <version>0.0.1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>moose-pinger</artifactId>
+    <name>Moose Pinger</name>
+    <description>An HTTP pinger sends HTTP requests to a specific path that is routed to itself, to ensure that your surrounding infrastructure (networks, IP addresses, DNS...) is correctly configured to serve the configured hostnames.</description>
 
     <dependencies>
         <dependency>
             <groupId>io.dolittle.moose</groupId>
-            <artifactId>moose-kubernetes</artifactId>
+            <artifactId>moose-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

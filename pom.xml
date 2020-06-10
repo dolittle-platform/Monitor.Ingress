@@ -9,12 +9,25 @@
         <relativePath/>
     </parent>
 
+    <properties>
+        <java.version>11</java.version>
+        <revision>0.0.1</revision>
+    </properties>
+
     <groupId>io.dolittle.moose</groupId>
     <artifactId>moose-parent</artifactId>
-    <version>0.0.1</version>
+    <version>${revision}</version>
     <name>Moose</name>
-    <description>Application suite to monitor Kubernetes ingress</description>
+    <description>Application suite to monitor Ingresses in a Kubernetes Cluster. It performs health-checks and security scans to ensure that your cluster and surrounding infrastructure is correctly and securely configured.</description>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>Source/Kubernetes</module>
+        <module>Source/Common</module>
+        <module>Source/Controller</module>
+        <module>Source/Pinger</module>
+        <module>Source/Runner</module>
+    </modules>
 
     <url>https://github.com/dolittle-platform/Moose</url>
     <organization>
@@ -45,17 +58,6 @@
         <url>https://github.com/dolittle-platform/Moose/issues</url>
     </issueManagement>
 
-    <properties>
-        <java.version>11</java.version>
-    </properties>
-
-    <modules>
-        <module>Source/Kubernetes</module>
-        <module>Source/Controller</module>
-        <module>Source/Pinger</module>
-        <module>Source/Runner</module>
-    </modules>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -67,7 +69,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.16.Final</version>
         </dependency>
@@ -104,6 +106,12 @@
             <groupId>info.javaspec</groupId>
             <artifactId>javaspec-runner</artifactId>
             <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -5,11 +5,13 @@
     <parent>
         <groupId>io.dolittle.moose</groupId>
         <artifactId>moose-parent</artifactId>
-        <version>0.0.1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>moose-kubernetes</artifactId>
+    <name>Moose Kubernetes Interactions</name>
+    <description>Wrappers for APIs and Types that the other Moose Modules use to interact with the Kubernetes Cluster.</description>
 
     <dependencies>
         <dependency>

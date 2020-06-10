@@ -6,11 +6,13 @@
     <parent>
         <groupId>io.dolittle.moose</groupId>
         <artifactId>moose-parent</artifactId>
-        <version>0.0.1</version>
+        <version>${revision}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>moose-runner</artifactId>
+    <name>Moose Runner</name>
+    <description>The Moose runtime that starts all or selected Moose components based on the provided configuration.</description>
     
     <dependencies>
         <dependency>
