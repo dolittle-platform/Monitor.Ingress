@@ -5,8 +5,6 @@ package io.dolittle.moose.pinger.service;
 
 import io.dolittle.moose.pinger.component.KeyManager;
 import io.dolittle.moose.pinger.model.PingHost;
-import io.dolittle.moose.pinger.model.Response;
-import io.dolittle.moose.pinger.util.PingConstants;
 import io.dolittle.moose.pinger.util.RESTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,73 +15,55 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A service to ping hosts
+ * The service is dependent on {@link KeyManager} to verify a successful ping to a host
+ */
 @Service
 @Slf4j
 public class RequestService {
 
-    private final KeyManager keyManager;
+    private final KeyManager _keyManager;
 
     @Autowired
     public RequestService(KeyManager keyManager) {
-
-        this.keyManager = keyManager;
+        this._keyManager = keyManager;
     }
 
     @Async
     public CompletableFuture<HashMap<String, Boolean>> pingHost(PingHost pingHost) {
         HashMap<String, Boolean> result = new HashMap<>();
-        result.put(pingHost.getHost(), Boolean.FALSE);
 
-        String url = pingHost.getURL();
+        var host = pingHost.getHost();
+        result.put(host, Boolean.FALSE);
 
-        String challengeKey = keyManager.addChallengeKey(pingHost.getHost());
+        var challengeKey = _keyManager.addChallengeKeyBeforePingRequest();
+        var url = pingHost.getURL() + "/" + challengeKey;
 
-        RestTemplate restTemplate = RESTUtil.getRestTemplate();
+        var restTemplate = RESTUtil.getRestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add(PingConstants.CHALLENGE_KEY, challengeKey);
+        headers.add(HttpHeaders.USER_AGENT, "Dolittle/Moose");
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<Response> exchange;
+        ResponseEntity<String> response;
         try {
             log.info("Pinging: {}, challenge-key: {}", url, challengeKey);
-            exchange = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Response.class);
+            response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+
+            if (response.getStatusCodeValue() == 200) {
+                result.put(host, _keyManager.verifyChallengeKeyAfterResponse(challengeKey));
+            }
 
         } catch (RestClientException e) {
-            log.error("Error pinging: "+ url);
+            log.error("Error pinging: " + url);
             log.debug("Stack trace", e);
             return CompletableFuture.completedFuture(result);
         }
 
-        Response response = exchange.getBody();
-        assert response != null;
-
-        if (!verifyResponseKey(response, pingHost.getHost())) {
-            log.warn("*** UNABLE TO VERIFY -> host: {}, url: {}, challenge-key: {} ***", pingHost.getHost(), pingHost.getURL(), challengeKey);
-            return CompletableFuture.completedFuture(result);
-        }
-
-        result.put(pingHost.getHost(), Boolean.TRUE);
-
         return CompletableFuture.completedFuture(result);
     }
 
-    private Boolean verifyResponseKey(Response response, String host) {
-        Response.Status status = response.getStatus();
-        String responsekey = response.getResponsekey();
-
-        log.debug("Got response: Status - {}, Response-key: {}", status, responsekey);
-
-        if (status.equals(Response.Status.OK)) {
-            if (responsekey == null || responsekey.isEmpty()) {
-                return false;
-            }
-            return keyManager.verifyResponseKey(host, responsekey);
-        }
-        return false;
-    }
 }

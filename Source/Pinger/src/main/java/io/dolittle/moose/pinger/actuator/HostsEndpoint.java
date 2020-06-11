@@ -3,8 +3,7 @@
 
 package io.dolittle.moose.pinger.actuator;
 
-import io.dolittle.moose.pinger.component.PingManager;
-import io.dolittle.moose.pinger.model.PingStatus;
+import io.dolittle.moose.pinger.component.PingStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -16,16 +15,16 @@ import org.springframework.stereotype.Component;
 @Endpoint(id = "hosts")
 public class HostsEndpoint {
 
-    private final PingManager pingManager;
+    private final PingStatus _pingStatus;
 
     @Autowired
-    public HostsEndpoint(PingManager pingManager) {
-        this.pingManager = pingManager;
+    public HostsEndpoint(PingStatus pingStatus) {
+        _pingStatus = pingStatus;
     }
 
     @ReadOperation
     PingStatus status() {
         log.debug("Providing management interface hosts status");
-        return pingManager.getStatus();
+        return _pingStatus;
     }
 }

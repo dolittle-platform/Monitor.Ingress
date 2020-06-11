@@ -6,32 +6,61 @@ package io.dolittle.moose.pinger.component;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ * Key manager is responsible for generating and storing a unique challenge key for every request.
+ * The manger also updates and verifies the keys in the store.
+ */
 @Component
 @Slf4j
 public class KeyManager {
 
-    private String HASH_SALT = "";
-    private HashMap<String, String> challengeList = new HashMap<>();
+    private final HashMap<String, Boolean> _challengeList = new HashMap<>();
 
     public KeyManager() {
-        generateSalt();
         log.info("Key Manager instantiated");
     }
 
-    @Scheduled(cron = "0 1 1 1/1 * ?")
-    public void generateSalt() {
+    public String addChallengeKeyBeforePingRequest() {
+        String challengeKey = generateChallengeKey();
+        log.debug("Adding challenge key: {}", challengeKey);
+
+        _challengeList.put(challengeKey,Boolean.FALSE);
+        return challengeKey;
+    }
+
+    public Boolean verifyChallengeKeyAfterResponse(String key) {
+        log.debug("Verifying challenge key: {}", key);
+        Boolean verified = _challengeList.get(key);
+        if (verified == null) {
+            return false;
+        }
+        _challengeList.remove(key);
+        return verified;
+    }
+
+    public Boolean updateChallengeKeyWhenPingIsReceived(String key) {
+        log.debug("Updating challenge key: {}", key);
+        Boolean foundKey = _challengeList.get(key);
+        if (foundKey == null) {
+            return false;
+        }
+        _challengeList.put(key, Boolean.TRUE);
+        return foundKey;
+    }
+
+    private String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[10];
         random.nextBytes(bytes);
-        HASH_SALT = Base64.encodeBase64String(bytes);
-        log.debug("Generated salt: {}", HASH_SALT);
+        String salt = Base64.encodeBase64String(bytes);
+        log.debug("Generated salt: {}", salt);
+        return salt;
     }
 
     private String generateUID() {
@@ -39,25 +68,10 @@ public class KeyManager {
         return uuid.toString();
     }
 
-    public String hashKeyWithSalt(String key) {
-        return DigestUtils.md5Hex(HASH_SALT + key);
-    }
-
-    public String addChallengeKey(String host) {
+    private String generateChallengeKey() {
         String uid = generateUID();
-        String hashKeyWithSalt = hashKeyWithSalt(uid);
-        challengeList.put(host, hashKeyWithSalt);
-        return uid;
+        String salt = generateSalt();
+        return DigestUtils.md5Hex(salt + uid);
     }
 
-    public Boolean verifyResponseKey(String host, String responseKey) {
-        log.debug("Verifying responsekey: {} from host: {}", responseKey, host);
-        String key = challengeList.get(host);
-        if (key == null || key.isEmpty()) {
-            return false;
-        }
-        challengeList.remove(host);
-        log.debug("Keys to verify -  Key: {} - Response-Key: {}", key, responseKey);
-        return key.equals(responseKey);
-    }
 }
