@@ -19,6 +19,7 @@ import java.util.Set;
 /**
  * Ingress manager is responsible to aggregate a list of {@link PingHost} that will be used by {@link PingManager}.
  * It utilizes the observer pattern by subscribing to Ingress events. Events are filtered by {@link io.dolittle.moose.kubernetes.Annotation}
+ * @see PingManager
  */
 @Component
 @Slf4j

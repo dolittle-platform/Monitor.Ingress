@@ -10,7 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Ping manager is responsible for periodically pinging a list of hosts
+ * Ping manager is responsible for periodically pinging a list of hosts and update their status in {@link PingStatus}
+ * @see IngressManager
+ * @see RequestService
  */
 @Component
 @Slf4j
@@ -28,6 +30,10 @@ public class PingManager {
         log.info("Ping Manager instantiated.");
     }
 
+    /**
+     * Periodically pings a set of hosts
+     * @see IngressManager
+     */
     @Scheduled(cron = "* */5 * * * ?")
     public void doPing() {
         var hostList = _ingressManager.getHostsList();
