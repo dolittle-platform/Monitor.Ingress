@@ -3,20 +3,18 @@
 
 package io.dolittle.moose.pinger.config;
 
-import java.util.concurrent.Executor;
-
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.Executor;
+
 @Profile("pinger")
 @Configuration
 @ComponentScan(basePackages = {"io.dolittle.moose.pinger", "io.dolittle.moose.kubernetes.config"})
-@ConfigurationPropertiesScan(basePackages = {"io.dolittle.moose.pinger.properties"})
 @Import(SecurityConfig.class)
 @EnableAsync
 @EnableScheduling
