@@ -14,7 +14,7 @@ import io.dolittle.moose.kubernetes.ingresses.Ingress.Path;
 
 /**
  * A Spring {@link Converter} that converts {@link String} property values to
- * {@link Annotation}.
+ * {@link io.dolittle.moose.kubernetes.Annotation}.
  */
 @Component
 @ConfigurationPropertiesBinding
