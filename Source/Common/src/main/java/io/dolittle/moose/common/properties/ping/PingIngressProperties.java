@@ -14,6 +14,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "io.dolittle.moose.ping")
 @Data
 public class PingIngressProperties {
-    Annotation annotation;
-    Path path;
+    private Annotation annotation;
+    private Path path;
 }
