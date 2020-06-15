@@ -3,9 +3,9 @@
 
 package io.dolittle.moose.pinger.component;
 
+import io.dolittle.moose.common.properties.ping.PingIngressProperties;
 import io.dolittle.moose.kubernetes.ingresses.ICanObserveIngresses;
 import io.dolittle.moose.pinger.model.PingHost;
-import io.dolittle.moose.pinger.properties.MonitorProperties;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ public class IngressManager {
 
     private final Set<PingHost> _hostList = new HashSet<>();
     private final ICanObserveIngresses _ingressObserver;
-    private final MonitorProperties _monitorProperties;
+    private final PingIngressProperties _pingIngressProperties;
 
     @Autowired
-    public IngressManager(ICanObserveIngresses IngressObserver, MonitorProperties monitorProperties) {
+    public IngressManager(ICanObserveIngresses IngressObserver, PingIngressProperties pingIngressProperties) {
         _ingressObserver = IngressObserver;
-        _monitorProperties = monitorProperties;
+        _pingIngressProperties = pingIngressProperties;
         log.info("Ingress Manager instantiated.");
         aggregateHosts();
     }
@@ -46,7 +46,7 @@ public class IngressManager {
 
     private void aggregateHosts() {
         log.debug("Aggregating hosts to be monitored");
-        var observable = _ingressObserver.observeAllIngressesWithAnnotations(_monitorProperties.getAnnotation());
+        var observable = _ingressObserver.observeAllIngressesWithAnnotations(_pingIngressProperties.getAnnotation());
         Disposable subscribe = observable.subscribe(ingresses -> {
             //Run through each item and aggregate a List of PingHost
             List<PingHost> pingHosts = new ArrayList<>();
