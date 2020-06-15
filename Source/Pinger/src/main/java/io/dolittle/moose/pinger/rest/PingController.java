@@ -25,6 +25,13 @@ public class PingController {
         this._keyManager = keyManager;
     }
 
+    /**
+     * Endpoint for receiving requests
+     * @param httpServletRequest
+     * @param challenge
+     * @return
+     * @see io.dolittle.moose.pinger.component.PingManager
+     */
     @RequestMapping(value = "/ping/{challenge}")
     public ResponseEntity<String> Ping(HttpServletRequest httpServletRequest, @PathVariable String challenge) {
         var remoteHost = httpServletRequest.getRemoteHost();

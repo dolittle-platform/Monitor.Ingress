@@ -23,6 +23,10 @@ public class StatusController {
         _pingStatus = pingStatus;
     }
 
+    /**
+     * Endpoint for checking the overall status of pinged hosts
+     * @return 503 when atleast 1 host has a failed ping otherwise 200 OK
+     */
     @RequestMapping(value = "/status")
     public ResponseEntity<String> Status() {
         var status = _pingStatus.getStatus();

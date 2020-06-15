@@ -41,7 +41,7 @@ public class PingStatus {
     }
 
     /**
-     * Store the result of pinged host
+     * Stores the result of a pinged host
      * @param host Pinged host
      * @param status True -> Success, False -> Fail
      */

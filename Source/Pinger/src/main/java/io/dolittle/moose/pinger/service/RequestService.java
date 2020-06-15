@@ -34,6 +34,12 @@ public class RequestService {
         this._keyManager = keyManager;
     }
 
+    /**
+     * Does an asynchronous request to hosts. Verifies the challenge key on response
+     * @param pingHost
+     * @return hostname and result of the ping. True -> success, False -> fail
+     * @see KeyManager
+     */
     @Async
     public CompletableFuture<HashMap<String, Boolean>> pingHost(PingHost pingHost) {
         HashMap<String, Boolean> result = new HashMap<>();
